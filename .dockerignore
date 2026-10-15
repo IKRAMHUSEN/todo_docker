@@ -1,0 +1,34 @@
+# ─────────────────────────────────────────────────────────
+# .dockerignore — files Docker should NOT copy into the image
+# Similar to .gitignore but for Docker builds
+# Keeps image small and build fast
+# ─────────────────────────────────────────────────────────
+
+# Laravel vendor folder (will be installed inside container)
+vendor/
+
+# Node modules (not needed in PHP container)
+node_modules/
+
+# Git history
+.git/
+.gitignore
+
+# Environment file (should never be baked into an image)
+.env
+
+# Docker files themselves (no need to copy into container)
+Dockerfile
+docker-compose.yml
+docker/
+
+# Laravel logs and cache
+storage/logs/
+bootstrap/cache/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+*.swp
+Thumbs.db
