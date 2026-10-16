@@ -1,59 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🐳 LaraTodo - Laravel 12 + MySQL + Docker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A beginner-friendly Laravel Todo application running entirely inside Docker with Nginx, PHP 8.2-FPM, and MySQL 8.0.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+You **only** need these two tools installed on your computer:
+- [Git](https://github.com/IKRAMHUSEN/todo_docker.git)
+- Docker Desktop running
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+> 💡 **Note:** You do **not** need PHP, Composer, or MySQL installed on your local machine. Everything runs inside Docker!
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Setup Instructions (Step-by-Step)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Follow these steps to run the project from scratch on any computer (Windows / Mac / Linux):
 
-## Laravel Sponsors
+### 1. Clone the Repository
+```bash
+git clone https://github.com/IKRAMHUSEN/todo_docker.git laratodo
+cd laratodo
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+### 2. Prepare Environment File (`.env`)
+Copy the example environment file:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Windows (PowerShell):**
+  ```powershell
+  copy .env.example .env
+  ```
+- **Mac / Linux / Git Bash:**
+  ```bash
+  cp .env.example .env
+  ```
 
-## Contributing
+Open `.env` and verify that the database credentials match Docker Compose:
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laratodo_db
+DB_USERNAME=laratodo_user
+DB_PASSWORD=laratodo_pass
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> ⚠️ **Important:** `DB_HOST` must be `db` (the Docker service name), **not** `localhost` or `127.0.0.1`.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Build & Start Docker Containers
+```bash
+docker compose up -d --build
+```
+*This downloads Nginx and MySQL images, builds the custom PHP image, and starts all 3 containers in the background.*
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Install PHP Dependencies (Composer)
+```bash
+docker compose exec app composer install
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Generate Application Encryption Key
+```bash
+docker compose exec app php artisan key:generate
+```
+
+---
+
+### 6. Run Database Migrations
+```bash
+docker compose exec app php artisan migrate
+```
+
+---
+
+### 7. Set Folder Permissions
+Ensure Laravel can write to `storage` and cache directories:
+```bash
+docker compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec app chmod -R 775 storage bootstrap/cache
+```
+
+---
+
+### 🎉 All Done! Open the App
+
+Open your browser and visit:
+👉 **[http://localhost:8080](http://localhost:8080)**
+
+---
+
+## 🗄️ Accessing the Database (TablePlus / DBeaver / GUI)
+
+You can connect to MySQL directly from your host machine:
+
+| Field | Value |
+|---|---|
+| **Host** | `127.0.0.1` |
+| **Port** | `3306` *(or `3307` if 3306 is occupied)* |
+| **User** | `laratodo_user` (or `root`) |
+| **Password** | `laratodo_pass` (or `rootpassword`) |
+| **Database** | `laratodo_db` |
+
+
+
+---
+
+## ⚠️ Troubleshooting
+
+### Port 3306 or 8080 already in use
+If you get `address already in use` error when starting containers:
+1. Open `docker-compose.yml`.
+2. Change the host port (left number) under `ports:`:
+   - For MySQL: change `"3306:3306"` to `"3307:3306"`
+   - For Web: change `"8080:80"` to `"8081:80"`
+3. Run `docker compose up -d` again.
+
+### Permission Denied Error
+If you see `The stream or file ".../laravel.log" could not be opened: Permission denied`:
+```bash
+docker compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec app chmod -R 775 storage bootstrap/cache
+```
