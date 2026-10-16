@@ -7,9 +7,9 @@ A beginner-friendly Laravel Todo application running entirely inside Docker with
 ## 📋 Prerequisites
 
 You **only** need these two tools installed on your computer:
-- [Git](https://github.com/IKRAMHUSEN/todo_docker.git)
-- Docker Desktop running
+- [Git](https://git-scm.com/)
 
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (must be running)
 > 💡 **Note:** You do **not** need PHP, Composer, or MySQL installed on your local machine. Everything runs inside Docker!
 
 ---
